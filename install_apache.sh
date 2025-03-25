@@ -9,11 +9,5 @@ else
  echo "apache seems not running,starting the service now..."
 sudo systemctl start apache2
 sudo systemctl enable apache2
-abcd 
-efgh
-<<<<<<< HEAD
-sjg
-=======
-abc
->>>>>>> feature
+
 fi
