@@ -9,6 +9,18 @@ else
  echo "apache seems not running,starting the service now..."
 sudo systemctl start apache2
 sudo systemctl enable apache2
-sudo systemctl restart apache2
-sudo systemctl start apache2
 fi
+echo "Adding users now"
+
+
+users="ram shyam hari gopal"
+
+
+for user in $users
+  do
+     echo "adding user $user"
+     useradd $user
+     id $user
+
+
+  done
