@@ -41,19 +41,6 @@ sudo docker run hello-world
 echo "Print status of apache service now"
 sudo systemctl status apache2
 fi
-echo "Adding users now"
 
-
-users="ram shyam hari gopal"
-
-
-for user in $users
-  do
-     echo "adding user $user"
-     useradd $user
-     id $user
-
-
-  done
   
 
