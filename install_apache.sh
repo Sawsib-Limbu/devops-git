@@ -9,6 +9,7 @@ else
  echo "apache seems not running,starting the service now..."
 sudo systemctl start apache2
 sudo systemctl enable apache2
+
 fi
 
 
@@ -36,3 +37,23 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 
 
 sudo docker run hello-world
+
+echo "Print status of apache service now"
+sudo systemctl status apache2
+fi
+echo "Adding users now"
+
+
+users="ram shyam hari gopal"
+
+
+for user in $users
+  do
+     echo "adding user $user"
+     useradd $user
+     id $user
+
+
+  done
+  
+
