@@ -39,7 +39,7 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
 sudo docker run hello-world
 
 echo "Print status of apache service now"
-sudo systemctl status apache2
+ sudo systemctl status apache2
 fi
 echo "Adding users now"
 
@@ -55,5 +55,5 @@ for user in $users
 
 
   done
-  
+echo "adding command to install packages in ubuntu"  
 
