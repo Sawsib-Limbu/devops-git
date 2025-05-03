@@ -1,0 +1,52 @@
+---
+- name: Setting up webserver
+  hosts: webservergrp
+  become: yes
+  tasks: 
+    - name: Install apache2 pkg in remote vm
+      apt: 
+        name: apache2
+        state: present 
+    - name: Start apache2 service
+      service: 
+        name: apache2
+        state: started  
+        enabled: yes    
+    - name: Copy file to apache webserver
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+
+
+- name: Setting up db server
+  hosts: dbservergrp
+  become: yes
+  tasks: 
+    - name: Install mysql in remote vm
+      apt: 
+       name: mysql-server
+       state: present
+    - name: Start mysql-server
+      service: 
+       name: mysql
+       state: started
+       enabled: yes
+    - name: Install python3-PyMySQL on remote vm
+      apt:
+        name: python3-pymysql
+        state: present
+    - name: Create a new database with name 'devopsdb'
+      mysql_db:
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        name: devopsdb
+        state: present      
+
+
+    - name: Create database user with name 'devops' with all database privileges
+      mysql_user:
+        login_unix_socket: /var/run/mysqld/mysqld.sock
+        name: devops
+        password: devops
+        priv: '*.*:ALL'
+               
+

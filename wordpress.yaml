@@ -1,0 +1,92 @@
+---
+- name: Setup MySQL on db1
+  hosts: dbservergrp
+  become: yes
+  tasks:
+    - name: Install MySQL Server
+      apt:
+        name: mysql-server
+        state: present
+        update_cache: yes
+
+    - name: Ensure MySQL is running
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+
+    - name: Install PyMySQL for Ansible DB modules
+      apt:
+        name: python3-pymysql
+        state: present
+
+    - name: Create WordPress Database
+      community.mysql.mysql_db:
+        name: wordpress
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
+
+    - name: Create WordPress DB User
+      community.mysql.mysql_user:
+        name: wordpress
+        password: wordpress
+        priv: 'wordpress.*:ALL'
+        state: present
+        login_unix_socket: /run/mysqld/mysqld.sock
+
+- name: Setup WordPress on web1
+  hosts: webservergrp
+  become: yes
+  vars:
+    db_name: wordpress
+    db_user: wordpress
+    db_password: wordpress
+    db_host: 192.168.56.60
+  tasks:
+    - name: Install Apache
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+
+    - name: Install PHP and extensions
+      apt:
+        name:
+          - php
+          - php-mysql
+          - libapache2-mod-php
+          - php-cli
+          - unzip
+        state: present
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+
+    - name: Download WordPress
+      get_url:
+        url: https://wordpress.org/latest.tar.gz
+        dest: /tmp/wordpress.tar.gz
+
+    - name: Extract WordPress
+      unarchive:
+        src: /tmp/wordpress.tar.gz
+        dest: /var/www/html/
+        remote_src: yes
+
+    - name: Set ownership
+      file:
+        path: /var/www/html/wordpress
+        owner: www-data
+        group: www-data
+        state: directory
+        recurse: yes
+
+    - name: Copy wp-config.php
+      template:
+        src: wp-config.php.j2
+        dest: /var/www/html/wordpress/wp-config.php
+        owner: www-data
+        group: www-data
+
